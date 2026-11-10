@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Modo escuro. Mesmos critérios de contraste da versão clara. -->
+<resources>
+    <color name="fundo">#121412</color>
+    <color name="superficie">#1D201E</color>
+    <color name="texto">#F2F2EE</color>               <!-- 14,7:1 sobre a superfície -->
+    <color name="primaria">#8ED3AE</color>            <!-- 8,3:1 com o texto escuro do botão -->
+    <color name="na_primaria">#00311B</color>
+    <color name="resposta">#21483A</color>
+    <color name="na_resposta">#D3ECDF</color>         <!-- 8,2:1 -->
+    <color name="contorno">#3E4440</color>
+    <color name="alerta">#FFB4AB</color>
+    <color name="alerta_container">#3A1714</color>    <!-- texto sobre ele: 14,3:1 -->
+</resources>

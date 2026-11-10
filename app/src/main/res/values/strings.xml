@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zelo</string>
+
+    <!-- Abertura -->
+    <string name="oi">Oi! Eu sou o Zelo. Vou dar uma olhada no seu celular pra ver se está tudo em ordem. Posso?</string>
+    <string name="pode_olhar">Pode olhar</string>
+    <string name="agora_nao">Agora não</string>
+    <string name="tudo_bem_depois">Tudo bem. Quando quiser, é só me abrir de novo.</string>
+
+    <!-- Revisão dos apps -->
+    <string name="um_instante">Só um instante, estou olhando os aplicativos…</string>
+    <string name="nenhum_suspeito">Boa notícia: não achei nenhum aplicativo com acesso perigoso.</string>
+    <plurals name="achados">
+        <item quantity="one">Achei %d aplicativo que merece atenção. Vamos olhar juntos?</item>
+        <item quantity="other">Achei %d aplicativos que merecem atenção. Vamos olhar um por um?</item>
+    </plurals>
+    <string name="vamos">Vamos</string>
+
+    <string name="app_pode">O aplicativo “%1$s” pode %2$s.</string>
+    <string name="acesso_acessibilidade">ver e controlar tudo o que aparece na sua tela</string>
+    <string name="acesso_administrador">bloquear o celular e dificultar a própria remoção</string>
+    <string name="acesso_notificacoes">ler suas notificações, inclusive mensagens e códigos de confirmação</string>
+    <string name="conector_e">" e "</string>
+    <string name="fora_da_loja">Ele foi instalado fora da loja oficial.</string>
+    <string name="so_fora_da_loja">O aplicativo “%1$s” foi instalado fora da loja oficial. Isso não quer dizer que seja golpe, mas vale conferir.</string>
+    <string name="acesso_remoto">É um aplicativo de acesso remoto: com ele, outra pessoa pode mexer no seu celular de longe.</string>
+    <string name="acesso_remoto_com_nome">O “%1$s” é um aplicativo de acesso remoto: com ele, outra pessoa pode mexer no seu celular de longe.</string>
+    <string name="reconhece">Você reconhece esse aplicativo?</string>
+    <string name="reconheco">Reconheço, pode ficar</string>
+    <string name="nao_conheco">Não conheço</string>
+    <string name="fim_apps">Terminamos os aplicativos.</string>
+
+    <!-- Remoção guiada -->
+    <string name="desligar_acessibilidade">Primeiro vamos tirar o acesso dele à sua tela. Vou abrir a tela de Acessibilidade: procure por “%1$s” e desligue.</string>
+    <string name="desligar_admin">Ele tem poder de administrador, e por isso não deixa ser desinstalado. Vou abrir a tela de segurança: procure por “Apps de administração do dispositivo” e desative o “%1$s”.</string>
+    <string name="abrir_tela">Abrir a tela</string>
+    <string name="pular">Pular este</string>
+    <string name="desinstalar_pedido">Agora é só desinstalar. Vou abrir a confirmação pra você.</string>
+    <string name="desinstalar">Desinstalar</string>
+    <string name="removido">Pronto, o “%1$s” não está mais no celular.</string>
+    <string name="ainda_instalado">O “%1$s” ainda está aí. Se ele não deixar desinstalar, peça ajuda a alguém de confiança e não use o banco pelo celular até resolver.</string>
+
+    <!-- Notificações -->
+    <string name="pedir_acesso_notificacoes">Agora as notificações. Pra eu conseguir ver e limpar as notificações, e te avisar quando alguém instalar um aplicativo novo, preciso de uma permissão. Na próxima tela, ative o Zelo.</string>
+    <string name="liberar">Liberar</string>
+    <string name="acesso_negado">Sem essa permissão eu não consigo cuidar das notificações. Tudo bem, dá pra liberar depois.</string>
+    <string name="acesso_negado_restrito">Não consegui a permissão. Se a opção apareceu bloqueada, é uma proteção do Android para apps instalados fora da loja: nas informações do Zelo, toque nos três pontinhos e escolha “Permitir configurações restritas”. Depois é só tentar de novo.</string>
+    <string name="abrir_info_zelo">Abrir informações do Zelo</string>
+    <string name="notificacoes_ok">Suas notificações estão em ordem.</string>
+    <string name="notificacoes_acumuladas">Você tem %1$d notificações acumuladas. Quem mais manda é o “%2$s”, com %3$d.</string>
+    <string name="limpar_todas">Limpar todas</string>
+    <string name="deixar">Deixar como está</string>
+    <string name="limpei">Prontinho, limpei tudo.</string>
+    <string name="silenciar_pergunta">Quer que o “%1$s” pare de mandar notificação? Vou abrir a tela dele, é só desligar.</string>
+    <string name="silenciar">Silenciar</string>
+    <string name="nao_precisa">Não precisa</string>
+
+    <!-- Encerramento -->
+    <string name="fim_com_guardiao">Por hoje é isso. Fico aqui de olho: se alguém instalar um aplicativo novo, eu te aviso.</string>
+    <string name="fim">Por hoje é isso.</string>
+
+    <!-- Avisos do guardião -->
+    <string name="alerta_instalacao">Um aplicativo novo acabou de ser instalado: “%1$s”.\n\nAlguém te ligou ou mandou mensagem pedindo pra instalar? Se sim, é golpe. Banco nenhum pede isso.</string>
+    <string name="alerta_instalacao_remoto">Um aplicativo de acesso remoto acabou de ser instalado: “%1$s”. Com ele, outra pessoa pode mexer no seu celular de longe.\n\nAlguém te ligou ou mandou mensagem pedindo pra instalar? Se sim, é golpe.</string>
+    <string name="alerta_acessibilidade">O aplicativo “%1$s” acabou de ganhar permissão pra ver e controlar sua tela.\n\nFoi você que ativou, ou alguém pediu pra você fazer isso?</string>
+    <string name="fui_eu">Fui eu, está tudo certo</string>
+    <string name="alguem_pediu">Alguém pediu</string>
+    <string name="tudo_certo">Tudo certo então. Se aparecer qualquer coisa estranha, eu aviso.</string>
+    <string name="golpe_orientacao">Então pare tudo agora: desligue a ligação e não faça mais nada que essa pessoa pediu. Vamos tirar esse aplicativo.</string>
+    <string name="app_ja_saiu">Esse aplicativo já não está mais no celular. Tudo certo.</string>
+
+    <!-- Notificações do sistema -->
+    <string name="notif_canal">Avisos de segurança</string>
+    <string name="notif_canal_desc">Avisos quando um aplicativo novo é instalado ou ganha acessos perigosos</string>
+    <string name="notif_instalacao_titulo">Aplicativo novo instalado</string>
+    <string name="notif_remoto_titulo">Cuidado: aplicativo de acesso remoto</string>
+    <string name="notif_acessibilidade_titulo">Um aplicativo ganhou controle da tela</string>
+    <string name="notif_texto">“%1$s”. Alguém pediu pra você fazer isso? Toque aqui antes de continuar.</string>
+</resources>

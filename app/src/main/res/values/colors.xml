@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Paleta fixa, de propósito. Não usamos a cor dinâmica do Material You: ela pega as cores
+    do papel de parede e o contraste fica imprevisível no celular de quem enxerga pouco.
+
+    Todo par de texto e fundo foi conferido no nível AAA da WCAG (contraste de 7:1 ou mais).
+-->
+<resources>
+    <color name="fundo">#FBF8F3</color>
+    <color name="superficie">#FFFFFF</color>
+    <color name="texto">#1A1A1A</color>               <!-- 17,4:1 sobre a superfície -->
+    <color name="primaria">#195C40</color>            <!-- 7,9:1 com texto branco -->
+    <color name="na_primaria">#FFFFFF</color>
+    <color name="resposta">#D3ECDF</color>
+    <color name="na_resposta">#0B2A1C</color>         <!-- 12,4:1 -->
+    <color name="contorno">#CFC8BE</color>
+    <color name="alerta">#9C2318</color>
+    <color name="alerta_container">#FDECEA</color>    <!-- texto sobre ele: 15,2:1 -->
+
+    <!-- Fundo do ícone do app: igual no modo claro e no escuro -->
+    <color name="icone_fundo">#195C40</color>
+    <color name="icone_simbolo">#FBF8F3</color>
+</resources>

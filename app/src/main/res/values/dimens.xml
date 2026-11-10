@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="borda_cartao">1dp</dimen>
+    <dimen name="borda_alerta">2dp</dimen>
+</resources>
