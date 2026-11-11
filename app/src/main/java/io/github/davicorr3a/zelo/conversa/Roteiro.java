@@ -20,6 +20,8 @@ import io.github.davicorr3a.zelo.analise.AppSuspeito;
 import io.github.davicorr3a.zelo.analise.AppSuspeito.Acesso;
 import io.github.davicorr3a.zelo.guardiao.AlertasGuardiao;
 import io.github.davicorr3a.zelo.guardiao.GuardiaoService;
+import io.github.davicorr3a.zelo.guardiao.HistoricoNotificacoes;
+import io.github.davicorr3a.zelo.organizacao.PlanoDeFaxina;
 import io.github.davicorr3a.zelo.util.Atalhos;
 import io.github.davicorr3a.zelo.util.Preferencias;
 
@@ -39,9 +41,12 @@ public final class Roteiro {
     private final Conversa conversa;
     private final Preferencias preferencias;
     private final AnalisadorApps analisador;
+    private final HistoricoNotificacoes historico;
     private final ExecutorService segundoPlano = Executors.newSingleThreadExecutor();
     private final Handler principal = new Handler(Looper.getMainLooper());
     private final Deque<AppSuspeito> fila = new ArrayDeque<>();
+    private final Deque<PlanoDeFaxina.Site> sites = new ArrayDeque<>();
+    private final Deque<PlanoDeFaxina.AppBarulhento> barulhentos = new ArrayDeque<>();
 
     private Runnable aoRetomar;
     // Muda a cada recomeço. Resultados de uma análise antiga são descartados.
@@ -52,6 +57,7 @@ public final class Roteiro {
         this.conversa = conversa;
         this.preferencias = new Preferencias(this.contexto);
         this.analisador = new AnalisadorApps(this.contexto, preferencias);
+        this.historico = new HistoricoNotificacoes(this.contexto);
     }
 
     // ---- Pontos de entrada ----
@@ -111,7 +117,7 @@ public final class Roteiro {
             return;
         }
 
-        String texto = contexto.getResources().getQuantityString(R.plurals.achados, achados.size(), achados.size());
+        String texto = p(R.plurals.achados, achados.size(), achados.size());
         conversa.dizer(Mensagem.de(texto).com(Acao.principal(t(R.string.vamos), this::proximoApp)));
     }
 
@@ -190,34 +196,84 @@ public final class Roteiro {
             return;
         }
 
-        Map<String, Integer> contagem = guardiao.contarPorApp();
-        int total = 0;
-        String campeao = null;
-        int doCampeao = 0;
-        for (Map.Entry<String, Integer> item : contagem.entrySet()) {
-            total += item.getValue();
-            if (item.getValue() > doCampeao) {
-                campeao = item.getKey();
-                doCampeao = item.getValue();
-            }
-        }
+        Map<String, Map<String, Integer>> bandeja = guardiao.contarNaBandeja();
+        PlanoDeFaxina plano = PlanoDeFaxina.montar(historico.porAppECanal(), bandeja, preferencias.canaisResolvidos());
+        sites.clear();
+        sites.addAll(plano.getSites());
+        barulhentos.clear();
+        barulhentos.addAll(plano.getApps());
 
-        if (total < MINIMO_PARA_FALAR_DE_NOTIFICACOES || campeao == null) {
-            conversa.dizer(Mensagem.de(t(R.string.notificacoes_ok)));
-            encerrar();
+        int total = somar(bandeja);
+        if (total < MINIMO_PARA_FALAR_DE_NOTIFICACOES) {
+            if (sites.isEmpty() && barulhentos.isEmpty()) {
+                conversa.dizer(Mensagem.de(t(R.string.notificacoes_ok)));
+                encerrar();
+            } else {
+                proximoSite();
+            }
             return;
         }
 
-        String pacoteCampeao = campeao;
-        String nomeCampeao = AnalisadorApps.nomeDoApp(contexto, campeao);
-        conversa.dizer(Mensagem.de(t(R.string.notificacoes_acumuladas, total, nomeCampeao, doCampeao))
+        conversa.dizer(Mensagem.de(p(R.plurals.notificacoes_acumuladas, total, total))
                 .com(Acao.principal(t(R.string.limpar_todas), () -> {
                     GuardiaoService atual = GuardiaoService.ativo();
                     if (atual != null) atual.limparTudo();
                     conversa.dizer(Mensagem.de(t(R.string.limpei)));
-                    oferecerSilenciar(pacoteCampeao, nomeCampeao);
+                    proximoSite();
                 }))
-                .com(Acao.secundaria(t(R.string.deixar), this::encerrar)));
+                .com(Acao.secundaria(t(R.string.deixar), this::proximoSite)));
+    }
+
+    // Sites primeiro: são eles que mandam "vírus detectado" e "você ganhou um prêmio".
+    private void proximoSite() {
+        PlanoDeFaxina.Site site = sites.poll();
+        if (site == null) {
+            proximoBarulhento();
+            return;
+        }
+
+        String chave = PlanoDeFaxina.chave(site.navegador, site.canal);
+        String navegador = AnalisadorApps.nomeDoApp(contexto, site.navegador);
+        conversa.dizer(Mensagem.de(p(R.plurals.site_notificando, site.quantidade, site.dominio, site.quantidade, navegador))
+                .com(Acao.principal(t(R.string.bloquear), () -> {
+                    preferencias.resolverCanal(chave);
+                    abrirEDepois(Atalhos.canalDoApp(site.navegador, site.canal), this::proximoSite);
+                }))
+                .com(Acao.secundaria(t(R.string.esse_eu_conheco), () -> {
+                    preferencias.resolverCanal(chave);
+                    proximoSite();
+                })));
+    }
+
+    private void proximoBarulhento() {
+        PlanoDeFaxina.AppBarulhento app = barulhentos.poll();
+        if (app == null) {
+            encerrar();
+            return;
+        }
+
+        int pergunta;
+        if (!app.porCanal) {
+            pergunta = R.string.barulhento_app_inteiro;
+        } else if (app.temOutrosCanais) {
+            pergunta = R.string.barulhento_canal_outros;
+        } else {
+            pergunta = R.string.barulhento_canal;
+        }
+        String nome = AnalisadorApps.nomeDoApp(contexto, app.pacote);
+        String texto = p(R.plurals.app_mandou, app.quantidade, nome, app.quantidade) + ' ' + t(pergunta);
+        Intent tela = app.porCanal ? Atalhos.canalDoApp(app.pacote, app.canal) : Atalhos.notificacoesDoApp(app.pacote);
+        String chave = PlanoDeFaxina.chave(app.pacote, app.canal);
+
+        conversa.dizer(Mensagem.de(texto)
+                .com(Acao.principal(t(R.string.desligar), () -> {
+                    preferencias.resolverCanal(chave);
+                    abrirEDepois(tela, this::proximoBarulhento);
+                }))
+                .com(Acao.secundaria(t(R.string.nao_precisa), () -> {
+                    preferencias.resolverCanal(chave);
+                    proximoBarulhento();
+                })));
     }
 
     private void explicarAcessoNegado() {
@@ -232,13 +288,6 @@ public final class Roteiro {
             conversa.dizer(Mensagem.de(t(R.string.acesso_negado)));
             encerrar();
         }
-    }
-
-    private void oferecerSilenciar(String pacote, String nome) {
-        conversa.dizer(Mensagem.de(t(R.string.silenciar_pergunta, nome))
-                .com(Acao.principal(t(R.string.silenciar),
-                        () -> abrirEDepois(Atalhos.notificacoesDoApp(pacote), this::encerrar)))
-                .com(Acao.secundaria(t(R.string.nao_precisa), this::encerrar)));
     }
 
     // ---- Avisos do guardião ----
@@ -286,6 +335,8 @@ public final class Roteiro {
         sessao++;
         aoRetomar = null;
         fila.clear();
+        sites.clear();
+        barulhentos.clear();
         principal.removeCallbacksAndMessages(null);
     }
 
@@ -327,6 +378,18 @@ public final class Roteiro {
         if (partes.size() == 1) return partes.get(0);
         String inicio = String.join(", ", partes.subList(0, partes.size() - 1));
         return inicio + t(R.string.conector_e) + partes.get(partes.size() - 1);
+    }
+
+    private static int somar(Map<String, Map<String, Integer>> contagem) {
+        int total = 0;
+        for (Map<String, Integer> canais : contagem.values()) {
+            for (int quantidade : canais.values()) total += quantidade;
+        }
+        return total;
+    }
+
+    private String p(int id, int quantidade, Object... argumentos) {
+        return contexto.getResources().getQuantityString(id, quantidade, argumentos);
     }
 
     private String t(int id, Object... argumentos) {

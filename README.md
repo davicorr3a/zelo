@@ -27,7 +27,9 @@ São dois momentos.
 - mostra apps com acesso à acessibilidade, à administração do dispositivo ou à leitura de notificações;
 - aponta apps instalados fora de uma loja oficial e apps de acesso remoto;
 - pergunta, app por app, se a pessoa reconhece. Se não reconhece, guia até desligar o acesso e desinstalar;
-- conta as notificações acumuladas, limpa tudo com um toque e ajuda a silenciar o app que mais incomoda.
+- conta as notificações acumuladas e limpa tudo com um toque;
+- mostra os sites que mandam notificação pelo navegador (os de "vírus detectado" e "você ganhou um prêmio") e ajuda a bloquear cada um;
+- aponta os apps que mais mandam notificação e ajuda a desligar só o tipo de aviso que incomoda, como as promoções de uma loja, sem perder o aviso de entrega.
 
 **No dia a dia.** Depois que o acesso às notificações é liberado, o Zelo fica de guarda:
 
@@ -108,9 +110,9 @@ O ponto de partida para entender o app é o `Roteiro.java`. Cada método é um m
 
 ## Próximos passos
 
-- [ ] Contar as notificações ao longo da semana, e não só as que estão na bandeja
-- [ ] Achar sites que mandam notificação pelo navegador e ajudar a bloquear
-- [ ] Silenciar só as promoções de um app e manter os avisos úteis, como o de entrega
+- [ ] Uma conversa curta para o dia a dia, que mostra o que mudou desde a última vez em vez de repetir a revisão inteira
+- [ ] Separar o que a família configura na visita do que a pessoa usa no dia a dia
+- [ ] Leitor de tela (TalkBack) anunciando cada mensagem nova do Zelo
 - [ ] Apps esquecidos, sem uso há meses, com sugestão de desinstalar
 - [ ] Apps que abrem por cima dos outros (propaganda em tela cheia, tela falsa de banco)
 - [ ] Aviso por SMS para um contato de confiança quando algo grave acontecer

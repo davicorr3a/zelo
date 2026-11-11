@@ -38,12 +38,9 @@ public final class HistoricoNotificacoes {
         editor.apply();
     }
 
-    public Map<String, Integer> porApp() {
-        return ContagemNotificacoes.porApp(prefs.getAll(), hoje());
-    }
-
-    public Map<String, Integer> porCanal(String pacote) {
-        return ContagemNotificacoes.porCanal(prefs.getAll(), pacote, hoje());
+    /** Contagem dos últimos sete dias, por app e por canal. */
+    public Map<String, Map<String, Integer>> porAppECanal() {
+        return ContagemNotificacoes.porAppECanal(prefs.getAll(), hoje());
     }
 
     private static long hoje() {

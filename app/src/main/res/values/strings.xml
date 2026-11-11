@@ -48,12 +48,27 @@
     <string name="acesso_negado_restrito">Não consegui a permissão. Se a opção apareceu bloqueada, é uma proteção do Android para apps instalados fora da loja: nas informações do Zelo, toque nos três pontinhos e escolha “Permitir configurações restritas”. Depois é só tentar de novo.</string>
     <string name="abrir_info_zelo">Abrir informações do Zelo</string>
     <string name="notificacoes_ok">Suas notificações estão em ordem.</string>
-    <string name="notificacoes_acumuladas">Você tem %1$d notificações acumuladas. Quem mais manda é o “%2$s”, com %3$d.</string>
+    <plurals name="notificacoes_acumuladas">
+        <item quantity="one">Você tem %1$d notificação acumulada. Quer que eu limpe?</item>
+        <item quantity="other">Você tem %1$d notificações acumuladas. Quer que eu limpe todas?</item>
+    </plurals>
     <string name="limpar_todas">Limpar todas</string>
     <string name="deixar">Deixar como está</string>
     <string name="limpei">Prontinho, limpei tudo.</string>
-    <string name="silenciar_pergunta">Quer que o “%1$s” pare de mandar notificação? Vou abrir a tela dele, é só desligar.</string>
-    <string name="silenciar">Silenciar</string>
+    <plurals name="site_notificando">
+        <item quantity="one">O site “%1$s” mandou %2$d notificação pelo “%3$s”, e isso quase sempre é propaganda, às vezes golpe. Quer bloquear? Vou abrir a tela, é só desligar.</item>
+        <item quantity="other">O site “%1$s” mandou %2$d notificações pelo “%3$s”, e isso quase sempre é propaganda, às vezes golpe. Quer bloquear? Vou abrir a tela, é só desligar.</item>
+    </plurals>
+    <string name="bloquear">Bloquear</string>
+    <string name="esse_eu_conheco">Esse eu conheço</string>
+    <plurals name="app_mandou">
+        <item quantity="one">O “%1$s” mandou %2$d notificação nos últimos dias.</item>
+        <item quantity="other">O “%1$s” mandou %2$d notificações nos últimos dias.</item>
+    </plurals>
+    <string name="barulhento_canal">Quer desligar esse tipo de aviso? Vou abrir a tela, é só desligar.</string>
+    <string name="barulhento_canal_outros">Quer desligar esse tipo de aviso? Vou abrir a tela, e os outros avisos dele continuam chegando.</string>
+    <string name="barulhento_app_inteiro">Quer que ele pare de mandar notificação? Vou abrir a tela dele, é só desligar.</string>
+    <string name="desligar">Desligar</string>
     <string name="nao_precisa">Não precisa</string>
 
     <!-- Encerramento -->

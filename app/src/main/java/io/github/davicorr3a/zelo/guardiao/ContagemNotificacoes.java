@@ -26,25 +26,14 @@ final class ContagemNotificacoes {
         return dia + SEPARADOR + pacote + SEPARADOR + (canal == null ? "" : canal);
     }
 
-    /** Total de notificações de cada app dentro da janela. */
-    static Map<String, Integer> porApp(Map<String, ?> salvas, long hoje) {
-        Map<String, Integer> total = new HashMap<>();
+    /** Total de notificações dentro da janela, agrupado por app e, dentro de cada app, por canal. */
+    static Map<String, Map<String, Integer>> porAppECanal(Map<String, ?> salvas, long hoje) {
+        Map<String, Map<String, Integer>> total = new HashMap<>();
         for (Map.Entry<String, ?> item : salvas.entrySet()) {
             Registro registro = ler(item.getKey());
             if (registro == null || !naJanela(registro.dia, hoje) || !(item.getValue() instanceof Integer)) continue;
-            total.merge(registro.pacote, (Integer) item.getValue(), Integer::sum);
-        }
-        return total;
-    }
-
-    /** Total de notificações de cada canal de um app dentro da janela. */
-    static Map<String, Integer> porCanal(Map<String, ?> salvas, String pacote, long hoje) {
-        Map<String, Integer> total = new HashMap<>();
-        for (Map.Entry<String, ?> item : salvas.entrySet()) {
-            Registro registro = ler(item.getKey());
-            if (registro == null || !registro.pacote.equals(pacote) || !naJanela(registro.dia, hoje)
-                    || !(item.getValue() instanceof Integer)) continue;
-            total.merge(registro.canal, (Integer) item.getValue(), Integer::sum);
+            total.computeIfAbsent(registro.pacote, pacote -> new HashMap<>())
+                    .merge(registro.canal, (Integer) item.getValue(), Integer::sum);
         }
         return total;
     }

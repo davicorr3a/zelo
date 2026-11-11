@@ -35,6 +35,13 @@ public final class Atalhos {
                 .putExtra(Settings.EXTRA_APP_PACKAGE, pacote);
     }
 
+    /** A tela de um tipo de aviso só, por exemplo as promoções de uma loja, sem mexer nos outros. */
+    public static Intent canalDoApp(String pacote, String canal) {
+        return new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, pacote)
+                .putExtra(Settings.EXTRA_CHANNEL_ID, canal);
+    }
+
     public static Intent acessibilidade() {
         return new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
     }

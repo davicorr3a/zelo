@@ -67,7 +67,7 @@ public class GuardiaoService extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification notificacao) {
         if (!naBandeja.add(notificacao.getKey())) return;
         if (!contaParaOZelo(notificacao) || ehResumoDeGrupo(notificacao)) return;
-        historico.registrar(notificacao.getPackageName(), notificacao.getNotification().getChannelId());
+        historico.registrar(notificacao.getPackageName(), canalDe(notificacao));
     }
 
     @Override
@@ -90,11 +90,13 @@ public class GuardiaoService extends NotificationListenerService {
         super.onDestroy();
     }
 
-    /** Quantas notificações cada app tem na bandeja agora (só as que podem ser limpas). */
-    public Map<String, Integer> contarPorApp() {
-        Map<String, Integer> contagem = new HashMap<>();
+    /** Quantas notificações estão na bandeja agora, por app e por canal (só as que podem ser limpas). */
+    public Map<String, Map<String, Integer>> contarNaBandeja() {
+        Map<String, Map<String, Integer>> contagem = new HashMap<>();
         for (StatusBarNotification notificacao : notificacoesNaBandeja()) {
-            if (contaParaOZelo(notificacao)) contagem.merge(notificacao.getPackageName(), 1, Integer::sum);
+            if (!contaParaOZelo(notificacao) || ehResumoDeGrupo(notificacao)) continue;
+            contagem.computeIfAbsent(notificacao.getPackageName(), pacote -> new HashMap<>())
+                    .merge(canalDe(notificacao), 1, Integer::sum);
         }
         return contagem;
     }
@@ -119,6 +121,11 @@ public class GuardiaoService extends NotificationListenerService {
     /** Notificações fixas (música tocando, GPS) e as do próprio Zelo ficam de fora. */
     private boolean contaParaOZelo(StatusBarNotification notificacao) {
         return notificacao.isClearable() && !notificacao.getPackageName().equals(getPackageName());
+    }
+
+    private static String canalDe(StatusBarNotification notificacao) {
+        String canal = notificacao.getNotification().getChannelId();
+        return canal != null ? canal : "";
     }
 
     // O resumo é o cabeçalho que o Android junta em cima de várias notificações do mesmo app.
