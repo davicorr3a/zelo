@@ -1,5 +1,6 @@
 package io.github.davicorr3a.zelo.guardiao;
 
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +37,10 @@ public class GuardiaoService extends NotificationListenerService {
     private BroadcastReceiver receptorDeInstalacao;
     private ContentObserver observadorDeAcessibilidade;
     private Set<String> acessibilidadeConhecida = Collections.emptySet();
+    private HistoricoNotificacoes historico;
+    // Chaves das notificações que estão na bandeja. Serve para não contar de novo quando um app
+    // só atualiza a mesma notificação (barra de download, por exemplo).
+    private final Set<String> naBandeja = new HashSet<>();
 
     /** Retorna o serviço se o acesso às notificações estiver liberado e conectado, ou null. */
     public static GuardiaoService ativo() {
@@ -42,16 +48,37 @@ public class GuardiaoService extends NotificationListenerService {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        historico = new HistoricoNotificacoes(this);
+    }
+
+    @Override
     public void onListenerConnected() {
         super.onListenerConnected();
         ativo = this;
+        naBandeja.clear();
+        for (StatusBarNotification notificacao : notificacoesNaBandeja()) naBandeja.add(notificacao.getKey());
         escutarInstalacoes();
         observarAcessibilidade();
     }
 
     @Override
+    public void onNotificationPosted(StatusBarNotification notificacao) {
+        if (!naBandeja.add(notificacao.getKey())) return;
+        if (!contaParaOZelo(notificacao) || ehResumoDeGrupo(notificacao)) return;
+        historico.registrar(notificacao.getPackageName(), notificacao.getNotification().getChannelId());
+    }
+
+    @Override
+    public void onNotificationRemoved(StatusBarNotification notificacao) {
+        naBandeja.remove(notificacao.getKey());
+    }
+
+    @Override
     public void onListenerDisconnected() {
         ativo = null;
+        naBandeja.clear();
         pararDeEscutar();
         super.onListenerDisconnected();
     }
@@ -66,17 +93,8 @@ public class GuardiaoService extends NotificationListenerService {
     /** Quantas notificações cada app tem na bandeja agora (só as que podem ser limpas). */
     public Map<String, Integer> contarPorApp() {
         Map<String, Integer> contagem = new HashMap<>();
-        StatusBarNotification[] ativas;
-        try {
-            ativas = getActiveNotifications();
-        } catch (SecurityException e) {
-            return contagem;
-        }
-        if (ativas == null) return contagem;
-
-        for (StatusBarNotification notificacao : ativas) {
-            if (!notificacao.isClearable() || notificacao.getPackageName().equals(getPackageName())) continue;
-            contagem.merge(notificacao.getPackageName(), 1, Integer::sum);
+        for (StatusBarNotification notificacao : notificacoesNaBandeja()) {
+            if (contaParaOZelo(notificacao)) contagem.merge(notificacao.getPackageName(), 1, Integer::sum);
         }
         return contagem;
     }
@@ -87,6 +105,26 @@ public class GuardiaoService extends NotificationListenerService {
         } catch (SecurityException ignorada) {
             // O acesso foi revogado entre a contagem e o toque no botão.
         }
+    }
+
+    private StatusBarNotification[] notificacoesNaBandeja() {
+        try {
+            StatusBarNotification[] ativas = getActiveNotifications();
+            return ativas != null ? ativas : new StatusBarNotification[0];
+        } catch (SecurityException e) {
+            return new StatusBarNotification[0];
+        }
+    }
+
+    /** Notificações fixas (música tocando, GPS) e as do próprio Zelo ficam de fora. */
+    private boolean contaParaOZelo(StatusBarNotification notificacao) {
+        return notificacao.isClearable() && !notificacao.getPackageName().equals(getPackageName());
+    }
+
+    // O resumo é o cabeçalho que o Android junta em cima de várias notificações do mesmo app.
+    // Contar ele seria contar uma notificação que a pessoa não recebeu.
+    private static boolean ehResumoDeGrupo(StatusBarNotification notificacao) {
+        return (notificacao.getNotification().flags & Notification.FLAG_GROUP_SUMMARY) != 0;
     }
 
     private void escutarInstalacoes() {

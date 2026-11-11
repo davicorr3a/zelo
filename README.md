@@ -48,6 +48,7 @@ Tudo acontece em forma de conversa. Não tem painel, gráfico nem termo técnico
 
 - **Não vigia.** Não monitora o que a pessoa assiste, com quem conversa ou por onde anda. É um app de cuidado e organização.
 - **Não se esconde.** A pessoa vê tudo o que o Zelo vê.
+- **Não guarda o que chega nas notificações.** Para saber quem mais incomoda, ele anota só quantas notificações cada app mandou nos últimos sete dias. Título e texto nunca são salvos.
 - **Não manda nada para lugar nenhum.** Não existe servidor.
 - **Não decide sozinho.** O Android não deixa um app comum revogar permissões de outros apps, e isso é bom. O Zelo leva a pessoa até a tela certa e ela decide.
 
