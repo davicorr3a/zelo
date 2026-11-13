@@ -100,13 +100,14 @@ A regra é simples: nenhuma biblioteca que acesse a rede, nada de analytics e na
 ```
 app/src/main/java/io/github/davicorr3a/zelo/
 ├── analise/     varredura dos apps instalados (acessos, origem, acesso remoto)
-├── conversa/    o roteiro da conversa e os modelos de mensagem
-├── guardiao/    serviço que fica de olho em instalações e na acessibilidade
+├── conversa/    o roteiro, as cenas da conversa e os modelos de mensagem
+├── guardiao/    serviço que fica de olho em instalações, na acessibilidade e nas notificações
+├── organizacao/ decide o que a faxina de notificações oferece
 ├── ui/          tela, ViewModel e adapter da conversa
 └── util/        atalhos para as telas de configuração e preferências locais
 ```
 
-O ponto de partida para entender o app é o `Roteiro.java`. Cada método é um momento da conversa, e dá para seguir o fluxo inteiro lendo de cima para baixo. O `ConversaViewModel` guarda a conversa e a activity só desenha o que ele manda.
+O ponto de partida para entender o app é o `Roteiro.java`. Ele é curto: só decide por onde a conversa começa e em que ordem as cenas acontecem. Cada cena (`RevisaoDeApps`, `RemocaoGuiada`, `FaxinaDeNotificacoes`, `AvisoDoGuardiao`) é uma classe pequena em que cada método é um momento da conversa, e dá para ler de cima para baixo. O que elas compartilham, como a espera pela volta de uma tela do sistema, fica no `Palco`. O `ConversaViewModel` guarda a conversa e a activity só desenha o que ele manda.
 
 ## Próximos passos
 
